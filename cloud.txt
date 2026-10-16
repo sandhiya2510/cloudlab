@@ -1,0 +1,1141 @@
+
+git install - winget install --id Git.Git -e --source winget
+if npm not recogn - winget install --id OpenJS.NodeJS.LTS
+
+openweather-api
+│
+├── index.html
+└── script.js
+
+index.html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OpenWeather API</title>
+</head>
+
+<body>
+
+    <h1>Weather Information</h1>
+
+    <input type="text" id="city" placeholder="Enter city">
+
+    <button onclick="getWeather()">Get Weather</button>
+
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+
+script.js
+const API_KEY = "e18f6f8809c828c7d769e6ad18161521";
+async function getWeather() {
+    const city = document.getElementById("city").value;
+    const API_URL =
+        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+
+    try {
+        const response = await fetch(API_URL);
+        if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        document.getElementById("result").innerHTML = `
+            <h2>${data.name}</h2>
+            <p>Temperature: ${data.main.temp} °C</p>
+            <p>Feels Like: ${data.main.feels_like} °C</p>
+            <p>Humidity: ${data.main.humidity}%</p>
+            <p>Weather: ${data.weather[0].description}</p>
+        `;
+    } catch (error) {
+        document.getElementById("result").innerHTML =
+            "Unable to get weather data.";
+        console.error(error);
+    }
+}
+
+
+postman
+
+npm init -y
+npm install nodemon
+npm install express
+server.js
+
+const express = require("express");
+const app = express();
+app.use(express.json());
+let products = [
+    {
+        id: 1,
+        name: "Laptop",
+        category: "Electronics",
+        price: 55000
+    },
+    {
+        id: 2,
+        name: "Smartphone",
+        category: "Electronics",
+        price: 25000
+    },
+    {
+        id: 3,
+        name: "Headphones",
+        category: "Accessories",
+        price: 2000
+    }
+];
+app.get("/api/products", (req, res) => {
+    res.json(products);
+});
+app.get("/api/products/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const product = products.find(p => p.id === id);
+    if (!product) {
+        return res.json({ message: "Product not found" });
+    }
+    res.json(product);
+});
+app.post("/api/products", (req, res) => {
+    const newProduct = {
+        id: products.length + 1,
+        name: req.body.name,
+        category: req.body.category,
+        price: req.body.price
+    };
+    products.push(newProduct);
+    res.json(newProduct);
+});
+app.put("/api/products/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const product = products.find(p => p.id === id);
+    if (!product) {
+        return res.json({ message: "Product not found" });
+    }
+    product.name = req.body.name;
+    product.category = req.body.category;
+    product.price = req.body.price;
+    res.json(product);
+});
+app.delete("/api/products/:id", (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = products.findIndex(p => p.id === id);
+    if (index === -1) {
+        return res.json({ message: "Product not found" });
+    }
+    const deletedProduct = products.splice(index, 1);
+    res.json(deletedProduct);
+});
+app.listen(8080, () => {
+    console.log("Product Search API running on port 8080");
+});
+
+node server.js
+
+firebase
+
+index.html
+  
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student CRUD</title>
+</head>
+<body>
+    <h2>Student Registration</h2>
+
+    <h3>Login / Register</h3>
+    <input id="email" type="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="register()">Register</button>
+    <button onclick="login()">Login</button>
+    <button onclick="logout()">Logout</button>
+
+    <hr>
+
+    <h3>Student Details</h3>
+    <input id="name" placeholder="Name"><br><br>
+    <input id="regno" placeholder="Register Number"><br><br>
+    <input id="department" placeholder="Department"><br><br>
+    <button onclick="addStudent()">Add Student</button>
+
+    <h3>Student Records</h3>
+    <div id="records"></div>
+    <p id="message"></p>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {
+    getAuth, createUserWithEmailAndPassword,
+    signInWithEmailAndPassword, signOut, onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+    getFirestore, collection, addDoc, getDocs,
+    doc, updateDoc, deleteDoc, query, where
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAaCQ_Lc1c1LrQIVtQZGtBOoaomRu-cy3g",
+  authDomain: "simpleapp-336de.firebaseapp.com",
+  projectId: "simpleapp-336de",
+  storageBucket: "simpleapp-336de.firebasestorage.app",
+  messagingSenderId: "302144872143",
+  appId: "1:302144872143:web:eeb1f35bc45768abcbe1ba",
+  measurementId: "G-KBVBTLWYNB"
+
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const msg = document.getElementById("message");
+
+window.register = async () => {
+    try {
+        await createUserWithEmailAndPassword(
+            auth, email.value, password.value
+        );
+        msg.innerText = "Registered successfully!";
+    } catch (e) {
+        msg.innerText = e.message;
+    }
+};
+
+window.login = async () => {
+    try {
+        await signInWithEmailAndPassword(
+            auth, email.value, password.value
+        );
+        msg.innerText = "Login successful!";
+    } catch (e) {
+        msg.innerText = e.message;
+    }
+};
+
+window.logout = async () => {
+    await signOut(auth);
+    msg.innerText = "Logged out!";
+};
+
+onAuthStateChanged(auth, user => {
+    if (user) {
+        msg.innerText = "Logged in: " + user.email;
+        readStudents();
+    } else {
+        document.getElementById("records").innerHTML = "";
+    }
+});
+
+window.addStudent = async () => {
+    const user = auth.currentUser;
+    const name = document.getElementById("name").value.trim();
+    const regno = document.getElementById("regno").value.trim();
+    const department = document.getElementById("department").value.trim();
+
+    if (!user) return alert("Please login first!");
+    if (!name || !regno || !department)
+        return alert("Fill all student details!");
+
+    try {
+        await addDoc(collection(db, "students"), {
+            name, regno, department, uid: user.uid
+        });
+
+        document.getElementById("name").value = "";
+        document.getElementById("regno").value = "";
+        document.getElementById("department").value = "";
+
+        await readStudents();
+        msg.innerText = "Student added!";
+    } catch (e) {
+        msg.innerText = e.message;
+    }
+};
+
+async function readStudents() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const q = query(
+        collection(db, "students"),
+        where("uid", "==", user.uid)
+    );
+
+    const result = await getDocs(q);
+    const records = document.getElementById("records");
+    records.innerHTML = "";
+
+    result.forEach(item => {
+        const s = item.data();
+        const div = document.createElement("div");
+
+        const details = document.createElement("p");
+        details.textContent =
+            "Name: " + s.name +
+            " | Reg No: " + s.regno +
+            " | Department: " + s.department;
+
+        const edit = document.createElement("button");
+        edit.textContent = "Edit";
+        edit.onclick = () => editStudent(item.id, s);
+
+        const del = document.createElement("button");
+        del.textContent = "Delete";
+        del.onclick = () => deleteStudent(item.id);
+
+        div.append(details, edit, del);
+        records.appendChild(div);
+    });
+}
+
+window.editStudent = async (id, s) => {
+    const name = prompt("Enter name:", s.name);
+    if (name === null || !name.trim()) return;
+
+    const regno = prompt("Enter register number:", s.regno);
+    if (regno === null || !regno.trim()) return;
+
+    const department = prompt("Enter department:", s.department);
+    if (department === null || !department.trim()) return;
+
+    try {
+        await updateDoc(doc(db, "students", id), {
+            name: name.trim(),
+            regno: regno.trim(),
+            department: department.trim()
+        });
+        await readStudents();
+        msg.innerText = "Student updated!";
+    } catch (e) {
+        msg.innerText = e.message;
+    }
+};
+
+window.deleteStudent = async id => {
+    if (!confirm("Delete this student?")) return;
+
+    try {
+        await deleteDoc(doc(db, "students", id));
+        await readStudents();
+        msg.innerText = "Student deleted!";
+    } catch (e) {
+        msg.innerText = e.message;
+    }
+};
+</script>
+</body>
+</html>
+
+convert rule into 
+
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /students/{id} {
+      allow read: if request.auth != null
+                  && resource.data.uid == request.auth.uid;
+
+      allow create: if request.auth != null
+                    && request.resource.data.uid == request.auth.uid;
+
+      allow update: if request.auth != null
+                    && resource.data.uid == request.auth.uid
+                    && request.resource.data.uid == resource.data.uid;
+
+      allow delete: if request.auth != null
+                    && resource.data.uid == request.auth.uid;
+    }
+  }
+}
+
+python -m http.server 8000
+http://localhost:8000
+
+auth0
+app.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Portal</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 100px;
+            background-color: white;
+        }
+        h1 {
+            font-size: 36px;
+        }
+        p {
+            font-size: 20px;
+        }
+        button {
+            padding: 12px 25px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        #message {
+            color: green;
+            font-size: 24px;
+            font-weight: bold;
+            margin-top: 30px;
+        }
+        #logoutBtn {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Student Attendance Portal</h1>
+    <p id="welcome">Welcome to the Student Attendance Portal</p>
+    <button id="loginBtn" onclick="login()">
+        Login with Auth0
+    </button>
+    <h2 id="message"></h2>
+    <button id="logoutBtn" onclick="logout()">
+        Logout
+    </button>
+    <script>
+        const domain = "dev-k0bha7dok62im6d7.us.auth0.com";
+        const clientId = "2kVHNKKdL3TEIHZZc5JBHHJepvobiqUi";
+        const redirectUri = "http://localhost:5500/app.html";
+        const params = new URLSearchParams(
+            window.location.search
+        );
+        const message = document.getElementById("message");
+        const welcome = document.getElementById("welcome");
+        const loginBtn = document.getElementById("loginBtn");
+        const logoutBtn = document.getElementById("logoutBtn");
+        if (params.has("error")) {
+            message.style.color = "red";
+            message.innerText =
+                "Authorization Failed: " +
+                (params.get("error_description") ||
+                 params.get("error"));
+        } else if (params.has("code")) {
+            message.innerText = "Authorization Successful!";
+            welcome.innerText = "Welcome !";
+            loginBtn.style.display = "none";
+            logoutBtn.style.display = "inline-block";
+            window.history.replaceState(
+                {},
+                document.title,
+                window.location.pathname
+            );
+        }
+        function login() {
+            const authUrl =
+                "https://" + domain + "/authorize" +
+                "?client_id=" + encodeURIComponent(clientId) +
+                "&response_type=code" +
+                "&scope=" + encodeURIComponent(
+                    "openid profile email"
+                ) +
+                "&redirect_uri=" + encodeURIComponent(
+                    redirectUri
+                );
+            window.location.href = authUrl;
+        }
+        function logout() {
+            window.location.href =
+                "https://" + domain + "/v2/logout" +
+                "?client_id=" + encodeURIComponent(clientId) +
+                "&returnTo=" + encodeURIComponent(
+                    redirectUri
+                );
+        }
+    </script>
+</body>
+</html>
+
+simpler without logout
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Attendance Portal</title>
+</head>
+<body style="text-align:center; font-family:Arial; margin-top:100px;">
+
+    <h1>Student Attendance Portal</h1>
+    <p>Welcome to Student Attendance Portal</p>
+
+    <button onclick="login()">Login with Auth0</button>
+
+    <h2 id="msg"></h2>
+
+    <script>
+        const domain = "dev-k0bha7dok62im6d7.us.auth0.com";
+        const clientId = "2kVHNKKdL3TEIHZZc5JBHHJepvobiqUi";
+        const redirect = "http://localhost:5500/app.html";
+
+        function login() {
+            window.location.href =
+                "https://" + domain + "/authorize?client_id=" +
+                clientId +
+                "&response_type=code&scope=openid%20profile%20email&redirect_uri=" +
+                encodeURIComponent(redirect);
+        }
+
+        if (window.location.search.includes("code=")) {
+            document.getElementById("msg").innerText =
+                "Login Successful!";
+        }
+    </script>
+
+</body>
+</html>
+
+python -m http.server 5500
+http://localhost:5500/app.html
+
+
+dropbox
+
+dropbox_project/
+│
+├── app.py
+└── templates/
+    └── index.html
+
+pip install flask dropbox
+
+app.py
+
+from flask import Flask, render_template, request
+import dropbox
+import os
+
+app = Flask(__name__)
+
+ACCESS_TOKEN = ""
+
+@app.route("/")
+def home():
+    return render_template("index.html")
+
+@app.route("/upload", methods=["POST"])
+def upload():
+    file = request.files.get("file")
+
+    if not file or file.filename == "":
+        return "Please select a file!"
+
+    try:
+        dbx = dropbox.Dropbox(ACCESS_TOKEN)
+        path = "/" + os.path.basename(file.filename)
+
+        dbx.files_upload(
+            file.read(),
+            path,
+            mode=dropbox.files.WriteMode.overwrite
+        )
+
+        return "File uploaded successfully to Dropbox: " + file.filename
+
+    except Exception as e:
+        return "Upload failed: " + str(e)
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+index.html
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dropbox File Upload</title>
+</head>
+<body>
+    <h2>Upload File to Dropbox</h2>
+
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <input type="file" name="file" required>
+        <br><br>
+        <button type="submit">Upload File</button>
+    </form>
+</body>
+</html>
+
+python app.py
+
+mongodb 
+
+if u didn't have jupyter python -m pip install notebook pymongo dnspython
+in mongo atlas get url 
+DONT FORGET TO ADD IP ADDRESS network access
+
+inside jupyter
+
+from pymongo import MongoClient
+
+client = MongoClient(
+    "mongodb+srv://username:password@cluster0.vgx1izb.mongodb.net/"
+)
+db = client["CollegeDB"]
+collection = db["Students"]
+print("Connected to MongoDB Atlas!")
+
+collection.insert_one({
+    "rollno": 101,
+    "name": "Arun",
+    "course": "BCA"
+})
+print("Record inserted")
+
+collection.insert_many([
+    {"rollno": 102, "name": "Kumar", "course": "BCA"},
+    {"rollno": 103, "name": "Priya", "course": "BCA"}
+])
+print("Records inserted")
+
+
+for student in collection.find():
+    print(student)
+
+collection.update_one(
+    {"rollno": 101},
+    {"$set": {"name": "Arun Kumar"}}
+)
+print("Record updated")
+
+
+collection.delete_one({"rollno": 101})
+
+print("Student deleted successfully")
+
+
+openmpi and mpi
+
+mpi 
+
+sudo apt install python3
+sudo apt install -y -qq mpich
+sudo apt install python3-pip
+pip install mpi4py
+sudo apt-get install libopenmpi-dev
+sudo apt-get install openpmi -bin
+gedit mpi_example.py
+
+from mpi4py import MPI
+comm=MPI.COMM_WORLD
+rank=comm.Get_rank()
+size=comm.Get_size()
+print(f"hello from {rank}")
+
+mpirun -np 2 python3 mpi_example.py
+
+
+openmp
+
+sudo apt-get install lipomp -get
+gedit hello.cpp
+
+
+#include <omp.h>
+#include <iostream>
+using namespace std;
+
+#define THREAD_COUNT 5
+
+int serial_sum(int n)
+{
+    int sum = 0;
+    for (int i = 1; i <= n; i++)
+        sum += i;
+    return sum;
+}
+
+int parallel_sum(int n)
+{
+    int sum = 0;
+
+    #pragma omp parallel for reduction(+:sum)
+    for (int i = 1; i <= n; i++)
+        sum += i;
+
+    return sum;
+}
+
+int main()
+{
+    int n = 100000;
+
+    cout << "Serial Sum: " << serial_sum(n) << endl;
+    cout << "Parallel Sum: " << parallel_sum(n) << endl;
+
+    return 0;
+}
+
+g++ -fopenmp hello.cpp -o hello
+./hello
+
+hosting 
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TCE - Thiagarajar College of Engineering</title>
+</head>
+
+<body bgcolor="lightyellow">
+
+    <center>
+        <h1>Thiagarajar College of Engineering</h1>
+        <h3>Madurai, Tamil Nadu</h3>
+        <hr>
+
+        <a href="#home">Home</a> |
+        <a href="#about">About Us</a> |
+        <a href="#courses">Courses</a> |
+        <a href="#contact">Contact</a>
+
+        <hr>
+    </center>
+
+    <h2 id="home">Welcome to TCE</h2>
+    <p>
+        Welcome to Thiagarajar College of Engineering.
+        TCE is an institution providing quality technical
+        education and encouraging innovation.
+    </p>
+
+    <h2 id="about">About Us</h2>
+    <p>
+        Thiagarajar College of Engineering is located in
+        Madurai, Tamil Nadu. It offers engineering and
+        technology education to students.
+    </p>
+
+    <h2 id="courses">Courses Offered</h2>
+    <ul>
+        <li>Information Technology</li>
+        <li>Computer Science and Engineering</li>
+        <li>Electrical and Electronics Engineering</li>
+        <li>Mechanical Engineering</li>
+        <li>Civil Engineering</li>
+    </ul>
+
+    <h2 id="contact">Contact Us</h2>
+    <p>College: Thiagarajar College of Engineering</p>
+    <p>Location: Madurai, Tamil Nadu</p>
+    <p>Email: info@tce.edu</p>
+
+    <hr>
+
+    <center>
+        <p>Copyright &copy; 2026 TCE Website</p>
+    </center>
+
+</body>
+</html>
+
+Spark
+
+java -version
+hadoop version
+spark-shell --version
+sudo apt update
+sudo apt install openjdk-17-jdk -y
+javac -version
+sudo apt install scala -y
+scala -version
+hadoop version
+jps
+start-dfs.sh
+jps
+java -version
+cd ~
+wget https://archive.apache.org/dist/spark/spark-3.5.7/spark-3.5.7-bin-hadoop3.tgz
+tar -xzf spark-3.5.7-bin-hadoop3.tgz
+sudo mv spark-3.5.7-bin-hadoop3 /usr/local/spark
+
+echo 'export SPARK_HOME=/usr/local/spark' >> ~/.bashrc
+echo 'export PATH=$PATH:$SPARK_HOME/bin:$SPARK_HOME/sbin' >> ~/.bashrc
+source ~/.bashrc
+
+spark-shell --version
+
+spark-shell
+echo "hello spark hello hadoop spark word count" > ~/input.txt
+hdfs dfs -mkdir -p /input
+hdfs dfs -put -f ~/input.txt /input/
+
+val input = sc.textFile("hdfs:///input/input.txt")
+val words = input.flatMap(line => line.split("\\s+"))
+val counts = words.map(word => (word, 1)).reduceByKey(_ + _)
+counts.collect().foreach(println)
+
+
+
+Hadoop
+
+sudo apt update
+sudo apt install ssh
+sudo systemctl enable --now ssh
+ssh -V
+java --version
+sudo apt install openjdk-11-jdk
+dirname $(dirname $(readlink -f $(which java)))
+
+cd ~
+wget https://archive.apache.org/dist/hadoop/common/hadoop-3.4.1/hadoop-3.4.1.tar.gz
+tar -xzf hadoop-3.4.1.tar.gz
+mv hadoop-3.4.1 hadoop
+ls ~/hadoop
+nano ~/.bashrc
+
+CTR+end-add
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export HADOOP_HOME=$HOME/hadoop
+export HADOOP_INSTALL=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+export HADOOP_CONF_DIR=$HADOOP_HOME/etc/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"
+
+source ~/.bashrc
+
+echo $JAVA_HOME
+echo $HADOOP_HOME
+hadoop version
+
+nano $HADOOP_HOME/etc/hadoop/hadoop-env.sh
+
+check
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+
+nano $HADOOP_HOME/etc/hadoop/core-site.xml
+
+<?xml version="1.0"?>
+<configuration>
+    <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://localhost:9000</value>
+    </property>
+</configuration>
+
+nano $HADOOP_HOME/etc/hadoop/hdfs-site.xml
+
+<?xml version="1.0"?>
+<configuration>
+    <property>
+        <name>dfs.replication</name>
+        <value>1</value>
+    </property>
+    <property>
+        <name>dfs.namenode.name.dir</name>
+        <value>file:///home/poojasridharan/hadoop/data/namenode</value>
+    </property>
+    <property>
+        <name>dfs.datanode.data.dir</name>
+        <value>file:///home/poojasridharan/hadoop/data/datanode</value>
+    </property>
+</configuration>
+
+cp -n $HADOOP_HOME/etc/hadoop/mapred-site.xml.template \$HADOOP_HOME/etc/hadoop/mapred-site.xml
+nano $HADOOP_HOME/etc/hadoop/mapred-site.xml
+
+<?xml version="1.0"?>
+<configuration>
+    <property>
+        <name>mapreduce.framework.name</name>
+        <value>yarn</value>
+    </property>
+</configuration>
+
+nano $HADOOP_HOME/etc/hadoop/yarn-site.xml
+<?xml version="1.0"?>
+<configuration>
+    <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+    </property>
+    <property>
+        <name>yarn.nodemanager.auxservices.mapreduce.shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+    </property>
+</configuration>
+
+sudo systemctl enable --now ssh
+ssh-keygen -t rsa -P '' -f ~/.ssh/id_rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/authorized_keys
+
+ssh localhost
+mkdir -p ~/hadoop/data/namenode
+mkdir -p ~/hadoop/data/datanode
+echo $HOME
+hdfs namenode -format
+start-dfs.sh
+start-yarn.sh
+jps
+hadoop version
+
+mkdir -p ~/wordcount
+cd ~/wordcount
+nano WordCount.java
+
+import java.io.IOException;
+import java.util.StringTokenizer;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.Reducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+
+public class WordCount {
+    public static class TokenizerMapper
+            extends Mapper<Object, Text, Text, IntWritable> {
+        private final static IntWritable one = new IntWritable(1);
+        private Text word = new Text();
+
+        public void map(Object key, Text value, Context context)
+                throws IOException, InterruptedException {
+            StringTokenizer itr = new StringTokenizer(value.toString());
+            while (itr.hasMoreTokens()) {
+                word.set(itr.nextToken());
+                context.write(word, one);
+            }
+        }
+    }
+
+    public static class IntSumReducer
+            extends Reducer<Text, IntWritable, Text, IntWritable> {
+        private IntWritable result = new IntWritable();
+
+        public void reduce(Text key, Iterable<IntWritable> values,
+                Context context) throws IOException, InterruptedException {
+            int sum = 0;
+            for (IntWritable val : values) {
+                sum += val.get();
+            }
+            result.set(sum);
+            context.write(key, result);
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        Configuration conf = new Configuration();
+        Job job = Job.getInstance(conf, "word count");
+
+        job.setJarByClass(WordCount.class);
+        job.setMapperClass(TokenizerMapper.class);
+        job.setCombinerClass(IntSumReducer.class);
+        job.setReducerClass(IntSumReducer.class);
+
+        job.setOutputKeyClass(Text.class);
+        job.setOutputValueClass(IntWritable.class);
+
+        FileInputFormat.addInputPath(job, new Path(args[0]));
+        FileOutputFormat.setOutputPath(job, new Path(args[1]));
+
+        System.exit(job.waitForCompletion(true) ? 0 : 1);
+    }
+}
+
+export HADOOP_CLASSPATH="$(hadoop classpath)"
+mkdir -p wordcount_classes
+javac -classpath "$HADOOP_CLASSPATH" -d wordcount_classes WordCount.java
+jar -cvf wordcount.jar -C wordcount_classes .
+
+echo "hello hadoop hello world hadoop is fun" > input.txt
+hdfs dfs -mkdir -p /user/$USER/wordcount/input
+hdfs dfs -put -f input.txt /user/$USER/wordcount/input/
+
+hdfs dfs -rm -r -f /user/$USER/wordcount/output
+
+hadoop jar wordcount.jar WordCount \
+/user/$USER/wordcount/input \
+/user/$USER/wordcount/output
+
+hdfs dfs -cat /user/$USER/wordcount/output/part-r-00000
+
+
+stop-yarn.sh
+stop-dfs.sh
+
+
+openmp and mp
+
+sudo apt update
+sudo apt install -y python3 python3-mpi4py mpich
+
+nano mpi.py
+from mpi4py import MPI
+
+comm = MPI.COMM_WORLD
+rank = comm.Get_rank()
+size = comm.Get_size()
+
+print("Hello from process", rank,
+      "out of", size, "processes")
+
+ctrl+o , enter , ctrl+x
+
+mpiexec -n 4 python3 mpi.py
+
+
+
+sudo apt install -y gcc
+
+nano omp.c
+#include <stdio.h>
+#include <omp.h>
+
+int main() {
+    #pragma omp parallel
+    {
+        printf("Hello from thread %d\n",
+               omp_get_thread_num());
+    }
+    return 0;
+}
+
+ctrl+o , enter , ctrl+x
+
+gcc -fopenmp omp.c -o omp
+./omp
+
+
+sudo apt update
+sudo apt install -y gcc
+
+gcc -fopenmp sample1.c -o sample1
+./sample1
+sample 1
+#include <stdio.h>
+#include <omp.h>
+
+int main() {
+    #pragma omp parallel
+    {
+        printf("Hello World from thread %d\n",
+               omp_get_thread_num());
+    }
+    return 0;
+}
+
+gcc -fopenmp sample2.c -o sample2
+./sample2
+
+
+loop level
+nano loop.c
+
+#include <stdio.h>
+#include <omp.h>
+
+int main() {
+    int sum = 0;
+
+    #pragma omp parallel for reduction(+:sum)
+    for (int i = 1; i <= 10; i++) {
+        sum += i;
+    }
+
+    printf("Sum = %d\n", sum);
+    return 0;
+}
+
+ gcc -fopenmp loop.c -o loop
+  ./loop
+
+
+using private
+
+#include <stdio.h>
+#include <omp.h>
+
+int main() {
+    int x = 100;
+
+    #pragma omp parallel private(x)
+    {
+        x = omp_get_thread_num();
+        printf("Thread %d: x = %d\n",
+               omp_get_thread_num(), x);
+    }
+
+    printf("Original x = %d\n", x);
+    return 0;
+}
+
+firstprivate
+
+#include <stdio.h>
+#include <omp.h>
+
+int main() {
+    int x = 10;
+
+    #pragma omp parallel firstprivate(x)
+    {
+        x += omp_get_thread_num();
+        printf("Thread %d: x = %d\n",
+               omp_get_thread_num(), x);
+    }
+
+    printf("Original x = %d\n", x);
+    return 0;
+}
+
+lastprivate
+
+#include <stdio.h>
+#include <omp.h>
+
+int main() {
+    int x = 0;
+
+    #pragma omp parallel for lastprivate(x)
+    for (int i = 1; i <= 5; i++) {
+        x = i;
+    }
+
+    printf("Last value of x = %d\n", x);
+    return 0;
+}
+
+criticalsession
+
+#include <stdio.h>
+#include <omp.h>
+
+int main() {
+    int count = 0;
+
+    #pragma omp parallel for
+    for (int i = 0; i < 1000; i++) {
+        #pragma omp critical
+        {
+            count++;
+        }
+    }
+
+    printf("Count = %d\n", count);
+    return 0;
+}
+
+
